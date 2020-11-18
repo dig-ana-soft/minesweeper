@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/style.css">
+    <title>Mine Sweeper 2020</title>
+</head>
+
+<body onload="init()">
+
+    <div class="status-bar">
+        Mines left: <span>X</span>
+        <button onclick="restartGame()">😀</button>
+        Time Elapsed: <span>001</span>
+    </div>
+
+    <div class="control-panel">
+
+        <div class="hearts">
+            ♥♥♥
+        </div>
+
+
+        <div class="hints">
+            💡💡💡
+        </div>
+    </div>
+
+    <table class="board">
+        </table>
+
+
+    <div class="difficulty">
+        <button onclick="changeDiff(0)">Beginner</button>
+        <button onclick="changeDiff(1)">Medium</button>
+        <button onclick="changeDiff(2)">Expert</button>
+    </div>
+    <script src="js/utils.js"></script>
+    <script src="js/__funcLib.js"></script>
+    <script src="js/game.js"></script>
+</body>
+
+</html>
