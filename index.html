@@ -11,11 +11,20 @@
 <body onload="init()">
 
     <div class="status-bar">
-        Mines left: <span>X</span>
-        <button onclick="restartGame()">😀</button>
-        Time Elapsed: <span>001</span>
+        <div>
+            Mines left: <span>X</span>
+        </div>
+        <!-- <div> -->
+            <button onclick="restartGame()">😀</button>
+        <!-- </div> -->
+        <div>
+            Time Elapsed: <span>001</span>
+        </div>
     </div>
 
+    <div class="message">
+        TESTING 0, 1, 2
+    </div>
     <div class="control-panel">
 
         <div class="hearts">
@@ -24,7 +33,9 @@
 
 
         <div class="hints">
-            💡💡💡
+            <img class="hint-img" src="img/light-off.png">
+            <img class="hint-img" src="img/light-off.png">
+            <img class="hint-img" src="img/light-off.png">
         </div>
     </div>
 
@@ -36,10 +47,36 @@
         <button onclick="changeDiff(0)">Beginner</button>
         <button onclick="changeDiff(1)">Medium</button>
         <button onclick="changeDiff(2)">Expert</button>
+        <!-- <button onclick="consoleRender('from button')">--debug--</button> -->
+
+    </div>
+    <div class="bottom-section">
+
+        <div class="high-scores">
+            <h4>High Scores:</h4>
+            <ul>
+                <li>Beginner: <span>0</span></li>
+                <li>Medium: <span>0</span></li>
+                <li>Expert: <span>0</span></li>
+            </ul>
+            <button onclick="resetHighScores()">RESET</button>
+        </div>
+        <div class="right-bottom">
+
+            <button onclick="undoStep()">UNDO</button>
+            <br>
+            <button onclick="safeBtnClick()">SAFE CLICK (<span>3</span>)</button>
+            <br>
+            <button onclick="placeMines()">PLACE MINES</button>
+        </div>
     </div>
     <script src="js/utils.js"></script>
     <script src="js/__funcLib.js"></script>
     <script src="js/game.js"></script>
+    <script src="js/highscore.js"></script>
+    <script src="js/hints.js"></script>
+    <script src="js/safeclick.js"></script>
+    <script src="js/mines.js"></script>
 </body>
 
 </html>

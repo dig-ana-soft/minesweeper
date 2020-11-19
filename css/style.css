@@ -1,17 +1,22 @@
 :root {
-    --cell-size: 40px;
+    --cell-size: 35px;
     box-sizing: border-box;
     --color-1: rgb(95, 158, 160);
 }
 body {
     margin: 0;
-    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
 }
 .status-bar {
+    display: grid;
+    grid-template-columns: 3fr 1fr 3fr;
     text-align: center;
     background: var(--color-1);
     margin: auto;
     padding: 5px 10px;
+}
+.status-bar div {
+    margin-top: 12px;
 }
 .control-panel {
     width: 100%;
@@ -22,10 +27,34 @@ body {
 .hints {
     border: 2px solid cadetblue;
     text-align: center;
-    padding: 10px;
+    /* padding: 10px; */
     font-size: 36px;
     background: rgb(227, 249, 250);
     
+}
+.hint-img {
+    max-height: 35px;
+    padding-top: 8px;
+}
+.hearts {
+    padding-top: 5px;
+}
+.message {
+    display: block;
+    text-align: center;
+    margin: 4px auto;
+    padding: 6px 10px;
+    font-size: 18px;
+    line-height: 18px;
+    font-weight: bold;
+    
+    background-color: tomato;
+    color: white;
+
+    visibility: hidden;
+}
+.horiz-move {
+    transition: 1.2s;
 }
 .board {
     margin: auto;
@@ -34,8 +63,6 @@ body {
 }
 
 .covered {
-    /* border-top: 2px solid rgb(204, 204, 204);
-    border-left: 2px solid rgb(204, 204, 204); */
     background: rgb(167, 167, 167);
 }
 .blown {
@@ -43,7 +70,7 @@ body {
 }
 td {
     cursor: pointer;
-    background: rgb(192, 192, 192);
+    background: rgb(204, 204, 204);
     width: var(--cell-size);
     height: var(--cell-size);
     line-height: var(--cell-size);
@@ -83,4 +110,57 @@ span {
 }
 .difficulty button:hover {
     background: rgba(255, 255, 255, 0.5);
+}
+.bottom-section {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    background-color: rgb(227, 249, 250);
+}
+.high-scores {
+    margin-top: 10px;
+}
+.high-scores h4 {
+    display: inline-block;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    margin-left: 40px;
+}
+.high-scores button {
+    background-color: cadetblue;
+    color: white;
+    font-weight: bold;
+    font-size: 16px;
+    margin-left: 37px;
+    margin-bottom: 10px;
+}
+.high-scores button:hover {
+    background: rgba(0, 0, 0, 0.5);
+}
+.high-scores ul {
+    margin-top: 0px;
+    margin-bottom: 10px;
+    list-style: none;
+}
+.high-scores li {
+    font-size: 14px;
+}
+
+.right-bottom {
+    text-align: right;
+    float: right;
+    margin-top: 12px;
+    margin-right: 20px;
+}
+.right-bottom button {
+    background-color: cadetblue;
+    color: white;
+    font-weight: bold;
+    font-size: 16px;
+    margin-top: 13px;
+}
+.right-bottom button:hover {
+    background: rgba(0, 0, 0, 0.5);
+}
+.hl-button {
+    background: tomato;
 }

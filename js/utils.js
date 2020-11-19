@@ -50,6 +50,18 @@ function revealBoard(board) {
 }
 
 // Cell Functions .............................................................
+function renderSafeCell(pos, value = null) {
+    var elCell = getCellElByPosition(pos);
+
+    if (!value) {
+        var currCell = gBoard[pos.i][pos.j];
+        if (currCell.isShown === false) value =' ';
+        else if (currCell.minesAroundCount > 0) value = currCell.minesAroundCount;
+    }
+
+    elCell.innerText = value;
+}
+
 function countMinesAroundCell(board, pos) {
     var count = 0;
     for (var i = pos.i - 1; i <= pos.i + 1; i++) {
@@ -91,10 +103,9 @@ function getCellPosByClassId(elCell) {
 }
 
 function getCellElByPosition(pos) {
-    var cellClass = `cell-${pos.i}-${pos.j}`;
-    console.log('cell class:', cellClass)
+    var cellClass = `.cell-${pos.i}-${pos.j}`;
     var elCell = document.querySelector(cellClass);
-    console.log('render cell:', elCell);
+    return elCell;
 }
 
 // Update Status Bar ..........................................................
@@ -116,4 +127,51 @@ function renderLives() {
     var elHearts = document.querySelector('.hearts');
     elHearts.innerText = (gGame.lives) ? HEART.repeat(gGame.lives) : BROKEN_HEART;
 }
-// Expanding neighbour cells ..................................................
+
+// Console table for debugging
+function consoleRender(logStr) {
+
+    console.log('printing table from func:', logStr);
+    var tbl = [];
+    for (var i = 0; i < gLevel.SIZE; i++) {
+        tbl[i] = [];
+        for (var j = 0; j < gLevel.SIZE; j++) {
+            // console.log(gBoard[i][j].minesAroundCount);
+            if (gBoard[i][j].isMine) tbl[i][j] = 'X';
+            else tbl[i][j] = ' ';
+        }
+    }
+    // console.clear();
+    console.table(tbl);
+}
+
+// Alerts .....................................................................
+function renderAlert(msg, duration = 4000) {
+    msg = msg.toUpperCase();
+    var elMsg = document.querySelector('.message');
+    elMsg.innerText = msg;
+    elMsg.classList.add('horiz-move');
+    elMsg.style.visibility = 'visible';
+    elMsg.style.fontSize = '20px';
+    setTimeout(hideAlert, duration);
+}
+
+function hideAlert() {
+    var elMsg = document.querySelector('.message');
+    elMsg.style.visibility = 'hidden';
+    elMsg.style.fontSize = '18px';
+    elMsg.classList.remove('horiz-move');
+
+}
+
+// Random funcs ...............................................................
+function getRandomInteger(min, max) {
+
+    var numRange = max - min + 1;       // range of allowed numbers
+    return Math.floor(Math.random() * numRange) + min;    // shift by min value
+}
+
+function getRandomSmiley() {
+    var arr = ['😬', '😇', '😃', '🤩', '🥳', '🤠', '👍', '🎓']
+    return arr[getRandomInteger(0, arr.length - 1)];
+}
