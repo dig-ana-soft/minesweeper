@@ -28,13 +28,13 @@ function updateBoardMinesCounts(board) {
 }
 
 // Manual placement ...........................................................
-function placeMines() {
+function placeMinesBtnClick() {
     restartGame();
     gBoard = buildBoard(gLevel.SIZE, gLevel.SIZE);
-    gIsPlacingMines = true;
-    highlightMinesButton();
+    gIsPlacingMines = !gIsPlacingMines;
+    toggleMinesPlaceButton();
 
-    uncoverAllCells();
+    if (gIsPlacingMines) uncoverAllCells();
 }
 function placeMine(pos) {
     // Model
@@ -49,11 +49,11 @@ function placeMine(pos) {
     // Is finished placing?
     if (gGame.markedCount === gLevel.MINES) {
         gIsPlacingMines = false;
-        renderAlert('finished placing mines');
+        renderAlert('finished placing mines', 2000);
         gIsModdedGame = true;
-        setTimeout(function () { renderAlert('proccessing field setup'); }, 2000);
-        setTimeout(restartGame, 4000);
-        initMinesButton();
+        setTimeout(function () { renderAlert('good luck soldier'); }, 2000);
+        setTimeout(restartGame, 500);
+        toggleMinesPlaceButton();
     }
 }
 
@@ -76,12 +76,9 @@ function coverAllCells() {
     renderBoard(gBoard);
 }
 
-// Todo: change to toggle :)
-function highlightMinesButton() {
+function toggleMinesPlaceButton(isToForceOff = false) {
     var elButton = document.querySelectorAll('.right-bottom button')[2];
-    elButton.style.backgroundColor = 'tomato';
-}
-function initMinesButton() {
-    var elButton = document.querySelectorAll('.right-bottom button')[2];
-    elButton.style.backgroundColor = 'cadetblue';
+    var btnColor = (gIsPlacingMines) ? 'tomato' : 'cadetblue';
+    if (isToForceOff) btnColor = 'cadetblue';
+    elButton.style.backgroundColor = btnColor;
 }

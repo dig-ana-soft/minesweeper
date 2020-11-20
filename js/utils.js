@@ -1,17 +1,21 @@
-/*  Mine Sweeper 2020 by Ori Weinstock
-    ----------------------------------
+'use strict'
 
-    Created on 18/11/2020, as a 1st Sprint project @Coding Academy
-    All rights are reserved for the people, by the people and with
-    the help of all people. */
-
+// Window/Document init .......................................................
+function initDocumentSetup() {
+    window.oncontextmenu = function () { return false; }
+    document.addEventListener('keydown', function(event) {
+        if (event.ctrlKey && event.key === 'z') {
+            undoStep();
+        }
+      });
+}
 
 // Array / Board functions ....................................................
 function buildBoard(rowsCount, colsCount) {
     var mat = [];
-    for (var i = 0; i < rowsCount; i++) {       // iterate rows
-        mat[i] = [];                            // create empty row array
-        for (var j = 0; j < colsCount; j++) {   // iterate cols
+    for (var i = 0; i < rowsCount; i++) {
+        mat[i] = [];
+        for (var j = 0; j < colsCount; j++) {
             mat[i][j] = {                       // insert cell object
                 isMine: false,                  // with default values
                 isShown: false,
@@ -25,20 +29,26 @@ function buildBoard(rowsCount, colsCount) {
 }
 
 function renderBoard(board) {
+
+    var cellSize = (gLevel.id === 2) ? 28 : 35;
+    let root = document.documentElement;
+    root.style.setProperty('--cell-size', cellSize + 'px');
+
     var strHtml = '';
-    for (var i = 0; i < board.length; i++) {       // iterate rows
-        strHtml += '<tr>';                      // create new table row 
-        for (var j = 0; j < board[0].length; j++) {   // iterate cols
+    for (var i = 0; i < board.length; i++) {
+        strHtml += '<tr>'; 
+        for (var j = 0; j < board[0].length; j++) {
             var currCellValue = getCellInnerText(board, i, j);
             var className = `cell-${i}-${j}`;
             if (board[i][j].isShown === false) className += ' covered';
             if (board[i][j].isBlown === true) className += ' blown';
             strHtml += `<td class="${className}" onmousedown="cellClick(this)">${currCellValue}</td>`
         }
-        strHtml += '</tr>';                     // end table row 
+        strHtml += '</tr>';
     }
     var elBoard = document.querySelector('.board');
     elBoard.innerHTML = strHtml;
+
 }
 
 function revealBoard(board) {
@@ -46,6 +56,31 @@ function revealBoard(board) {
         for (var j = 0; j < board[0].length; j++) {
             board[i][j].isShown = true;
         }
+    }
+}
+
+function expandNegCells(pos) {
+
+    if (pos.i < 0 || pos.i > gLevel.SIZE - 1 || pos.j < 0 || pos.j > gLevel.SIZE - 1) return;
+
+    if (gBoard[pos.i][pos.j].minesAroundCount === 0) {
+
+        var count = 0
+        for (var i = pos.i - 1; i <= pos.i + 1; i++) {
+            if (i < 0 || i > gBoard.length - 1) continue
+            for (var j = pos.j - 1; j <= pos.j + 1; j++) {
+                if (j < 0 || j > gBoard[0].length - 1) continue
+                if (i === pos.i && j === pos.j) continue
+                if (gBoard[i][j].isMine === false) {
+                    if (!gBoard[i][j].isShown) {
+                        gBoard[i][j].isShown = true;
+                        gGame.shownCount++;
+                        expandNegCells({ i: i, j: j });    // RECURSE
+                    }
+                }
+            }
+        }
+        return count
     }
 }
 
@@ -98,7 +133,6 @@ function getCellInnerText(board, i, j) {
 function getCellPosByClassId(elCell) {
     var strClass = elCell.classList[0].split("-");  // gets the 1st class "cell-1-4" and splits
     var pos = { i: +strClass[1], j: +strClass[2] };   // create position object for model
-    // if (gIsDebug) console.log('position receieved from cell click:', pos);
     return pos;
 }
 
@@ -136,7 +170,6 @@ function consoleRender(logStr) {
     for (var i = 0; i < gLevel.SIZE; i++) {
         tbl[i] = [];
         for (var j = 0; j < gLevel.SIZE; j++) {
-            // console.log(gBoard[i][j].minesAroundCount);
             if (gBoard[i][j].isMine) tbl[i][j] = 'X';
             else tbl[i][j] = ' ';
         }
@@ -146,7 +179,7 @@ function consoleRender(logStr) {
 }
 
 // Alerts .....................................................................
-function renderAlert(msg, duration = 4000) {
+function renderAlert(msg, duration = 3000) {
     msg = msg.toUpperCase();
     var elMsg = document.querySelector('.message');
     elMsg.innerText = msg;

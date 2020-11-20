@@ -3,11 +3,21 @@
     box-sizing: border-box;
     --color-1: rgb(95, 158, 160);
 }
+* {
+    letter-spacing: 1px;
+
+}
 body {
     margin: 0;
     font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
 }
+.wrapper {
+    max-width: 750px;
+    margin: auto;
+}
 .status-bar {
+    color:white;
+    font-weight: bold;
     display: grid;
     grid-template-columns: 3fr 1fr 3fr;
     text-align: center;
@@ -25,19 +35,18 @@ body {
 }
 .hearts,
 .hints {
-    border: 2px solid cadetblue;
     text-align: center;
-    /* padding: 10px; */
     font-size: 36px;
-    background: rgb(227, 249, 250);
-    
+    background: rgb(227, 249, 250);   
 }
 .hint-img {
+    cursor: pointer;
     max-height: 35px;
     padding-top: 8px;
 }
 .hearts {
     padding-top: 5px;
+    border-right: 2px solid cadetblue;
 }
 .message {
     display: block;
@@ -102,6 +111,7 @@ span {
     padding: 5px;
 }
 .difficulty button {
+    color: white;
     border: none;
     background: rgba(255, 255, 255, 0.3);
     font-size: 16px;
@@ -117,6 +127,7 @@ span {
     background-color: rgb(227, 249, 250);
 }
 .high-scores {
+    color:  rgb(39, 74, 75);
     margin-top: 10px;
 }
 .high-scores h4 {
@@ -148,7 +159,7 @@ span {
 .right-bottom {
     text-align: right;
     float: right;
-    margin-top: 12px;
+    margin-top: 0px;
     margin-right: 20px;
 }
 .right-bottom button {
@@ -156,7 +167,7 @@ span {
     color: white;
     font-weight: bold;
     font-size: 16px;
-    margin-top: 13px;
+    margin-top: 24px;
 }
 .right-bottom button:hover {
     background: rgba(0, 0, 0, 0.5);
@@ -164,3 +175,29 @@ span {
 .hl-button {
     background: tomato;
 }
+.tooltip {
+    position: relative;
+    display: inline-block;
+    border-bottom: 1px dotted black;
+} 
+.tooltip .tooltiptext {
+    letter-spacing: normal;
+    visibility: hidden;
+    font-size: 12px;
+    font-weight: lighter;
+    background-color:  rgb(255, 255, 255);
+    color: rgb(0, 0, 0);
+    text-align: center;
+    border-radius: 3px;
+    padding: 3px 6px;
+    
+    /* Position the tooltip */
+    position: absolute;
+    z-index: 1;
+    bottom: 90%;
+    left: 50%;
+    margin-left: -60px;
+}
+.tooltip:hover .tooltiptext {
+    visibility: visible;
+} 

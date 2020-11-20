@@ -38,14 +38,14 @@ function safeBtnClick() {
     renderSafeCell(pos, SAFE_CELL);
     gGame.safeClicks--;
     setTimeout(function () { hideSafeCell(pos); }, 1000);
-    renderSafeClicks();
+    renderSafeClicksBtn();
 }
 
 function hideSafeCell(pos) {
     renderSafeCell(pos);
 }
 
-function renderSafeClicks() {
+function renderSafeClicksBtn() {
     var elSafeBtnSpan = document.querySelector('.right-bottom span');
     elSafeBtnSpan.innerText = gGame.safeClicks;
 }

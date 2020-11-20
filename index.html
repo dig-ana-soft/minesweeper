@@ -8,66 +8,75 @@
     <title>Mine Sweeper 2020</title>
 </head>
 
-<body onload="init()">
+<body  onload="init()">
 
-    <div class="status-bar">
-        <div>
-            Mines left: <span>X</span>
+    <div class="wrapper">
+
+        <div class="status-bar">
+            <div>
+                Mines left: <span>X</span>
+            </div>
+            <!-- <div> -->
+                <button onclick="restartGame()">😀</button>
+            <!-- </div> -->
+            <div>
+                Time Elapsed: <span>001</span>
+            </div>
         </div>
-        <!-- <div> -->
-            <button onclick="restartGame()">😀</button>
-        <!-- </div> -->
-        <div>
-            Time Elapsed: <span>001</span>
+    
+        <div class="message">
+            TESTING 0, 1, 2
         </div>
-    </div>
-
-    <div class="message">
-        TESTING 0, 1, 2
-    </div>
-    <div class="control-panel">
-
-        <div class="hearts">
-            ♥♥♥
+        <div class="control-panel">
+    
+            <div class="hearts">
+                ♥♥♥
+            </div>
+    
+    
+            <div class="hints">
+                <img class="hint-img" src="img/light-off.png">
+                <img class="hint-img" src="img/light-off.png">
+                <img class="hint-img" src="img/light-off.png">
+            </div>
         </div>
-
-
-        <div class="hints">
-            <img class="hint-img" src="img/light-off.png">
-            <img class="hint-img" src="img/light-off.png">
-            <img class="hint-img" src="img/light-off.png">
+    
+        <table class="board">
+            </table>
+    
+    
+        <div class="difficulty">
+            <button onclick="changeDiff(0)">Beginner</button>
+            <button onclick="changeDiff(1)">Medium</button>
+            <button onclick="changeDiff(2)">Expert</button>
+            <!-- <button onclick="consoleRender('from button')">--debug--</button> -->
+    
         </div>
-    </div>
-
-    <table class="board">
-        </table>
-
-
-    <div class="difficulty">
-        <button onclick="changeDiff(0)">Beginner</button>
-        <button onclick="changeDiff(1)">Medium</button>
-        <button onclick="changeDiff(2)">Expert</button>
-        <!-- <button onclick="consoleRender('from button')">--debug--</button> -->
-
-    </div>
-    <div class="bottom-section">
-
-        <div class="high-scores">
-            <h4>High Scores:</h4>
-            <ul>
-                <li>Beginner: <span>0</span></li>
-                <li>Medium: <span>0</span></li>
-                <li>Expert: <span>0</span></li>
-            </ul>
-            <button onclick="resetHighScores()">RESET</button>
-        </div>
-        <div class="right-bottom">
-
-            <button onclick="undoStep()">UNDO</button>
-            <br>
-            <button onclick="safeBtnClick()">SAFE CLICK (<span>3</span>)</button>
-            <br>
-            <button onclick="placeMines()">PLACE MINES</button>
+        <div class="bottom-section">
+    
+            <div class="high-scores">
+                <h4>High Scores:</h4>
+                <ul>
+                    <li>Beginner: <span>0</span></li>
+                    <li>Medium: <span>0</span></li>
+                    <li>Expert: <span>0</span></li>
+                </ul>
+                <button onclick="resetHighScores()">RESET</button>
+            </div>
+            <div class="right-bottom">
+    
+                <button class="tooltip" onclick="undoStep()">UNDO
+                    <div class="tooltiptext">Ctrl-Z</div>
+                </button>
+                <br>
+                <button class="tooltip" onclick="safeBtnClick()">SAFE CLICK (<span>3</span>)
+                    <div class="tooltiptext">Shows 1 safe cell to click</div>
+                </button>
+                <br>
+                <button class="tooltip" onclick="placeMinesBtnClick()">PLACE MINES
+                    <div class="tooltiptext">Arrange the board yourself</div>
+                </button>
+            </div>
         </div>
     </div>
     <script src="js/utils.js"></script>

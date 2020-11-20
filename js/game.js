@@ -1,7 +1,22 @@
 'use strict'
+/*  Mine Sweeper 2020 by Ori Weinstock
+    ----------------------------------
 
-// DEBUG MODE
-var gIsDebug = true;
+    Created on 18/11/2020, as a 1st Sprint project @Coding Academy
+    All rights are reserved for the people, by the people and with
+    the help of all people. 
+
+    What's new in V1.1: (20/11/2020)
+    - FIXES:
+    - Fix a bug that would spread more mines if 1st clicked mouse button is "right-click"
+    - Fix an issue when placing mines btn was pressed, and then depressed without finishing placing mines
+    - Allowing undo 'till the end (a.k.a 'new game'...)
+    - Fixed layout to not be so wide, plus several minor visual touch-ups
+    - Fixed cursor to pointer on hint-lightbulbs
+    - NEW FEATURES:
+    - Added Ctrl-Z for undo
+    - Added tool tips for bottom buttons
+*/
 
 // Constants ..................................................................
 const MINE = '💣';
@@ -35,8 +50,7 @@ var gLevel = gLevels[0];
 var gGame;
 
 function init() {
-    // disable right-click context menu
-    window.oncontextmenu = function () { return false; }
+    initDocumentSetup();
     getHighScores();
     restartGame();
 }
@@ -57,7 +71,7 @@ function restartGame() {
         secsPassed: 0
     };
 
-    if (!gIsModdedGame) { 
+    if (!gIsModdedGame) {
         gBoard = buildBoard(gLevel.SIZE, gLevel.SIZE);
     } else {
         coverAllCells();
@@ -76,21 +90,21 @@ function renderAllButBoard() {
     renderMinesLeft();
     renderHighScores();
     renderHints();
-    renderSafeClicks();
-    hideAlert();
+    renderSafeClicksBtn();
+    // hideAlert();
 }
 
 function changeDiff(level) {
     gLevel = gLevels[level];
     gIsPlacingMines = false;
     gIsModdedGame = false;
-    initMinesButton();
+    toggleMinesPlaceButton(false);
     restartGame();
 }
 
 function cellClick(elCell) {
-    
-    if (!gGame.isOn) return;        // start a new game please.
+
+    if (!gGame.isOn) return;
 
     var pos = getCellPosByClassId(elCell);
     if (gIsPlacingMines) {
@@ -103,31 +117,72 @@ function cellClick(elCell) {
         return;
     }
 
-    if (gGame.shownCount === 0) {   // if 1st click of game
+    var mouseButton = event.button;
+
+    if (gGame.shownCount === 0 && mouseButton === 0) {   // if 1st click of game
         gInterval = setInterval(function () { gGame.secsPassed++; renderTimer(); }, 1000);
         if (!gIsModdedGame) spreadMines(gBoard, pos);
         gIsModdedGame = false;
-        // gGameSaves.push({ gGameState: gGame, gBoardState: gBoard });
-        // console.log('after 1st click, 1st saved game = ', gGameSaves[0]);
     }
-
-    var mouseButton = event.button;
+    
     if (mouseButton === 0) cellLeftClick(pos, elCell);
     if (mouseButton === 2) cellMark(pos, elCell);
+
 
     if (gGame.shownCount + gGame.markedCount === gLevel.SIZE ** 2) gameOver(true);
     renderBoard(gBoard);
 
-    // Handle undo
+    saveStepForUndo();
+}
+
+function cellLeftClick(pos) {
+
+    var clickedCell = gBoard[pos.i][pos.j];
+    if (clickedCell.isMarked === true) return;
+    if (clickedCell.isShown === true) return;
+    if (gGame.isHintMode === true) return;
+
+    if (clickedCell.isMine === true) {
+        clickedCell.isBlown = true;
+        gGame.lives--;
+        if (gGame.lives === 0) {                            // end game
+            revealBoard(gBoard);
+            renderLives();
+            gameOver();
+            return;
+        } else {                                            // lives left...
+            gGame.shownCount--;                             // avoid double ++ (marked & shown)
+            gGame.markedCount++;
+            renderLives();
+            renderMinesLeft();
+        }
+    }
+
+    clickedCell.isShown = true;                    // else - show and count
+    expandNegCells(pos);
+    gGame.shownCount++;
+}
+
+function cellMark(pos) {
+
+    var clickedCell = gBoard[pos.i][pos.j];
+    if (clickedCell.isShown === true) return;
+
+    if (clickedCell.isMarked === false) {
+        clickedCell.isMarked = true;
+        gGame.markedCount++;
+    } else {
+        clickedCell.isMarked = false;
+        gGame.markedCount--;
+    }
+    renderMinesLeft();
+}
+
+
+function saveStepForUndo() {
     var copyGameState = JSON.parse(JSON.stringify(gGame));
     var copyBoardState = JSON.parse(JSON.stringify(gBoard));
     gGameSaves.push({ gGameState: copyGameState, gBoardState: copyBoardState });
-    var currSaveIdx = gGameSaves.length - 1;
-    // console.log('after a click, 1st saved game = ', gGameSaves[0])
-    // console.log('after a click, 1st saved time = ', gGameSaves[0].gGameState.secsPassed);
-    // console.log('current save:', currSaveIdx);
-    // console.log('after a click, last saved time = ', gGameSaves[currSaveIdx].gGameState.secsPassed);
-    // console.log('all save array: ...', gGameSaves);
 }
 
 function gameOver(isVictory) {
@@ -141,100 +196,29 @@ function gameOver(isVictory) {
     else renderAlert('game over', 10000);
 }
 
-function cellLeftClick(pos) {
-
-    if (gBoard[pos.i][pos.j].isMarked === true) return;     // if flagged - do nothing  
-    if (gBoard[pos.i][pos.j].isShown === true) return;      // if already shown - do nothing
-    if (gGame.isHintMode === true) return;
-
-    if (gBoard[pos.i][pos.j].isMine === true) {             // clicked on a mine
-        gBoard[pos.i][pos.j].isBlown = true;
-        gGame.lives--;
-        if (gGame.lives === 0) {                            // end game
-            revealBoard(gBoard);
-            renderLives();
-            gameOver();
-            return;
-        } else {                                            // lives left...
-            gGame.shownCount--;                             // for now... avoid double ++
-            gGame.markedCount++;                            
-            renderLives();
-            renderMinesLeft();
-        }
-    }
-
-    gBoard[pos.i][pos.j].isShown = true;                    // else - show and count
-    expandNegCells(pos);
-    gGame.shownCount++;
-}
-
-function cellMark(pos) {
-
-    // if cell is shown - can't flag
-    if (gBoard[pos.i][pos.j].isShown === true) return;
-
-    // else: toggle, and update count
-    if (gBoard[pos.i][pos.j].isMarked === false) {
-        gBoard[pos.i][pos.j].isMarked = true;
-        gGame.markedCount++;
-    } else {
-        gBoard[pos.i][pos.j].isMarked = false;
-        gGame.markedCount--;
-    }
-    renderMinesLeft();
-}
-
-
-
-function expandNegCells(pos) {
-
-    if (pos.i < 0 || pos.i > gLevel.SIZE - 1 || pos.j < 0 || pos.j > gLevel.SIZE - 1) return;
-
-    if (gBoard[pos.i][pos.j].minesAroundCount === 0) {
-
-        var count = 0
-        for (var i = pos.i - 1; i <= pos.i + 1; i++) {
-            if (i < 0 || i > gBoard.length - 1) continue
-            for (var j = pos.j - 1; j <= pos.j + 1; j++) {
-                if (j < 0 || j > gBoard[0].length - 1) continue
-                if (i === pos.i && j === pos.j) continue
-                if (gBoard[i][j].isMine === false) {
-                    if (!gBoard[i][j].isShown) {
-                        gBoard[i][j].isShown = true;
-                        gGame.shownCount++;
-                        expandNegCells({ i: i , j: j });    // RECURSE
-                    }
-                }
-            }
-        }
-        return count
-    }
-}
-
 function undoStep() {
     var currStep = gGameSaves.length - 1;
     if (currStep < 1) {
-        renderAlert('undo again = new game...')
+        restartGame();
         return;
     }
     gGameSaves.pop();
 
-    console.log('before render, saved game moves count = ', gGameSaves[0].gGameState.shownCount);
-    renderGame(gGameSaves[currStep - 1]); // 0 for debug
-
+    renderGameStep(gGameSaves[currStep - 1]);
 }
 
-function renderGame(saveGame) {
+function renderGameStep(saveGame) {
 
+    // perform DEEP copy of game object/board, and keep timer running
     gBoard = JSON.parse(JSON.stringify(saveGame.gBoardState));
     var tmpTimer = gGame.secsPassed
     gGame = JSON.parse(JSON.stringify(saveGame.gGameState));
     gGame.secsPassed = tmpTimer;
 
+    // render restored step
     renderBoard(gBoard);
     renderLives();
     renderTimer();
     renderMinesLeft();
     renderHints();
-    // debugger;
 }
